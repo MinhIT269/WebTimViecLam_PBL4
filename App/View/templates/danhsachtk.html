@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/danhsach.css')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+
+<body>
+    <div class="table">
+        <div class="table_header">
+            <h3>DANH SÁCH TÀI KHOẢN</h3>
+            <div>
+                <input id="Find_TK" placeholder="Tìm kiếm theo gmail">
+                <button id="add_new"><i class="fa-solid fa-plus"></i> Add New</button>
+            </div>
+        </div>
+        <div class="table_section">
+            <table id="DuLieuTK">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Loại tài khoản</th>
+                        <th>Tên tài khoản</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ds in dstk%}
+                    <tr>
+                        <td>{{loop.index}}</td>
+                        <td>{{ds.QuyenUser}}</td>
+                        <td>{{ds.Gmail}}</td>
+                        <td>
+                            <button id="update_{{ds.Gmail}}" type="button" class="update"><i
+                                    class="fa-solid fa-pen-to-square"></i></button>
+                            <button type="button" onclick="del('{{ds.Gmail}}', '{{ds.QuyenUser}}')"><i class="fa-solid fa-trash"
+                                    value='{{ds.Gmail}}'></i></button>
+                        </td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+        <div class="modal">
+            <div class="popup">
+                <div class="close-btn">&times;</div>
+                <div class="form">
+                    <h2>Thêm tài khoản</h2>
+                    <div class="form-element">
+                        <label for="email">Email</label>
+                        <input type="text" id="email" placeholder="Enter email">
+                    </div>
+                    <div class="form-element">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="Enter password">
+                    </div>
+                    <div class="form-element">
+                        <button type="button" id="Add_TK">Thêm tài khoản</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal2">
+            <div class="popup">
+                <div class="close-btn">&times;</div>
+                <div class="form">
+                    <h2>Sửa tài khoản</h2>
+                    <div class="form-element">
+                        <label for="IDUser">IDUser</label>
+                        <input type="text" id="IDUser" readonly>
+                    </div>
+                    <div class="form-element">
+                        <label for="email">Email</label>
+                        <input type="text" id="email1" placeholder="Enter email">
+                    </div>
+                    <div class="form-element">
+                        <label for="password">Password</label>
+                        <input type="password" id="password1" placeholder="Enter password">
+                    </div>
+                    <div class="form-element">
+                        <button type="button" id="Update_TK">Cật nhật</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function del(Gmail, userType) {
+            formdata = new FormData();
+            if(userType == "admin"){
+                alert("Không thể xóa tài khoản admin")
+                return
+            }
+            formdata.append('Gmail', Gmail);
+            fetch("/Users/DeleteUser/", {
+                "method": "DELETE",
+                "body": formdata
+            })
+            .then(respone => {
+                if (respone.status == 200){
+                    window.localStorage.removeItem(Gmail);
+                    window.location.reload()
+                }
+            })
+            .catch(err => alert(err))
+        }
+
+        document.getElementById("Add_TK").addEventListener("click", function (e) {
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
+            const formdata = new FormData()
+            formdata.append('Gmail', email)
+            formdata.append('Password', password)
+            const dulieu = Object.fromEntries(formdata);
+            fetch("/Users/AddUser/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(dulieu)
+            })
+                .then(respone => respone.json())
+                .then(data => {
+                    if (data == true) {
+                        alert("Thêm user thành công")
+                        window.location.reload()
+                    }
+                    else {
+                        alert(data.message)
+                    }
+                })
+                .catch(err => alert(err))
+        });
+        document.getElementById("Update_TK").addEventListener("click", function (e) {
+            var email = document.getElementById("email1").value;
+            var password = document.getElementById("password1").value;
+            var IDUser = document.getElementById("IDUser").value;
+            const formdata = new FormData()
+            formdata.append("IDUser", IDUser)
+            formdata.append('Gmail', email)
+            formdata.append('Password', password)
+            const dulieu = Object.fromEntries(formdata);
+            fetch("/Users/UpdateUser/", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(dulieu)
+            })
+                .then(respone => respone.json())
+                .then(data => {
+                    if (data == true) {
+                        alert("Update user thành công")
+                        window.location.reload()
+                    }
+                    else {
+                        alert(data.message)
+                    }
+                })
+                .catch(err => alert("Lỗi hệ thống: " + err))
+        });
+        function attachUpdateEvent() {
+            document.querySelectorAll(".update").forEach(function (element) {
+                element.addEventListener("click", function () {
+                    document.querySelector(".modal2").style.display = "flex";
+                    var element_id = element.getAttribute("id").split("_")[1];
+                    fetch("/Users/" + element_id)
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById("email1").value = data.Gmail;
+                            document.getElementById("password1").value = data.Password;
+                            document.getElementById("IDUser").value = data.IDUser;
+                        })
+                        .catch(error => console.error('Error:', error));
+                });
+            });
+        }
+        document.getElementById("Find_TK").addEventListener("input", function () {
+            var value = this.value;
+            var formdata = new FormData();
+            formdata.append('Gmail', value);
+            fetch('/Users/SearchUserByGmail', {
+                method: 'POST',
+                body: formdata
+            })
+                .then(response => response.json())
+                .then(data => {
+                    var tbody = document.querySelector("#DuLieuTK tbody");
+                    tbody.innerHTML = '';
+                    for (var i = 0; i < data.length; i++) {
+                        tbody.innerHTML += `
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${data[i].QuyenUser}</td>
+                            <td>${data[i].Gmail}</td>
+                            <td>
+                                <button id="update_${data[i].Gmail}" type="button" class="update"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button type="button" onclick="del('${data[i].Gmail}')"><i class="fa-solid fa-trash" value='${data[i].Gmail}'></i></button>
+                            </td>
+                        </tr>
+                    `;
+                    }
+                    attachUpdateEvent();
+                })
+                .catch(error => console.error('Error:', error));
+
+        });
+    </script>
+    <script type="text/javascript" src=" {{ url_for('static', path='/js/themtk.js') }}"></script>
+</body>
+
+</html>

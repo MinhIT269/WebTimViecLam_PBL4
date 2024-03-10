@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News247 - Tìm kiếm việc làm</title>
+    <!-- CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/admin2.css') }}">
+    <!-- icon style-->
+    <!--Favicon-->
+    <link rel="shortcut icon" href="{{ url_for('static', path='/images/favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', path='/images/favicon.ico') }}" type=" image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+</head>
+<body>
+    <div class="body-inner">
+        <div class="header">
+            <nav class="navbar navbar-expand-lg fixed-top nav-item1">
+                <div class="container-fluid">
+                    <a class="navbar-brand me-auto" href="#"><img
+                            src="{{ url_for('static', path='/images/logos/logo.png') }}" alt=""></a>
+                    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+                        aria-labelledby="offcanvasNavbarLabel">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Logo</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                                aria-label="Close"></button>
+                        </div>
+                    </div>
+                    <a href="/Login" class="login-button" id="Log_Out">Đăng xuất</a>
+                    <button class="navbar-toggler pe-0" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar"
+                        aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+        <!-- menu button -->
+        <div class="wp-content">
+            <div class="side-content">
+                <div class="side-bar">
+                    <header>
+                        <img src="{{ url_for('static', path='/images/sidebar/anh-chan-dung-nam.jpeg') }}" alt="">
+
+                        <div class'd-flex justify-content-center align-items-center' style="width:250px;">
+                            <p class="text-break text-center" style="font-size: 20px;">{{userID}}</p>
+                        </div>
+                    </header>
+                    <!-- Menu items -->
+                    <div class="menu">
+                        <nav class="nav-item2">
+                            <aside>
+                                <ul>
+                                    <li>
+                                        <a href="#" onclick="SelectItemMenu('/admin/{{userID}}')">
+                                            <i class="fa fa-home"></i>
+                                            <span>Trang chủ</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul>
+                                    <li id="comp">
+                                        <a href="#">
+                                            <i class="fa fa-diamond"></i>
+                                            <span>Tổng quan</span>
+                                            <i class="fa fa-angle-right"></i>
+                                        </a>
+                                        <ul>
+                                            <li>
+                                                <a onclick="SelectItemMenu('{{userID}}/TongQuan')">Thống kê</a>
+                                            </li>
+                                            <li>
+                                                <a onclick="SelectItemMenu('{{userID}}/danh-sach-tk')">Tài khoản</a>
+                                            </li>
+                                            <li>
+                                                <a onclick="SelectItemMenu('admin/{{userID}}/tim-kiem-DuLieu')">Tìm kiếm</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li id="user">
+                                        <a href="#">
+                                            <i class="fa fa-user"></i>
+                                            <span>Tuyển dụng</span>
+                                            <i class="fa fa-angle-right"></i>
+                                        </a>
+                                        <ul>
+                                            <li>
+                                                <a onclick="SelectItemMenu('{{userID}}/admin-Edit-TD')">Danh sách tuyển dụng</a>
+                                            </li>
+                                            <li>
+                                                <a onclick="SelectItemMenu('{{userID}}/admin-Add-TD')">Thêm bài
+                                                    mới</a>
+                                            </li>
+                                            <li>
+                                                <a onclick="">Cật nhật tuyển
+                                                    dụng</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </aside>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content">
+                <article>
+                    <iframe id="frame" name="loadpage" src="/admin/{{userID}}" frameborder="0" width="100%" height="700px">
+                    </iframe>
+                </article>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById("Log_Out").addEventListener("click", function (e) {
+            e.preventDefault();
+            userID = "{{userID}}";
+            tokenExist = window.sessionStorage.getItem(userID);
+            if(tokenExist != null){
+                window.sessionStorage.removeItem(userID)
+                window.localStorage.removeItem(userID)
+            }
+            window.location.href = "/";
+        })
+    </script>
+    <!-- Jquery CDN link -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', path='/js/admin.js') }}"></script>
+</body>
+
+</html>

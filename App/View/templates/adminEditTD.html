@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/adminTuyenDung.css')}}">
+</head>
+
+<body>
+    <section class="admin-content">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header">
+                        <h1 class="card-title">Cật nhật bài tuyển dụng</h1>
+                    </div>
+                    <div class="card-body">
+                        <form class="needs-validation" id="UpdateTD" autocomplete="off">
+                            <div class="form-group">
+                                <label for="NoiTD">Nơi tuyển dụng</label>
+                                <input type="text" class="form-control" placeholder="Nơi tuyển dụng" id="NoiTD"
+                                    name="NoiTD" value="{{td.NoiTD if td.NoiTD is not none else ''}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="NgayTD">Ngày tuyển dụng</label>
+                                <input type="datetime-local" class="form-control" id="NgayTD" name="NgayTD" 
+                                value="{{td.NgayTD}}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="SoLuongTD">Số lượng tuyển dụng</label>
+                                <input type="text" class="form-control" id="SoLuongTD" Name="SoLuongTD"
+                                value="{{td.SoLuongTD if td.SoLuongTD is not none else ''}}" placeholder="Số lượng tuyển">
+                            </div>
+                            <div class="form-group">
+                                <label for="LinhVucTD">Lĩnh vực tuyển dụng</label>
+                                <input type="text" class="form-control" id="LinhVucTD" name="LinhVucTD"
+                                value="{{td.LinhVucTD}}" placeholder="Lĩnh vực tuyển" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="ViTriTD">Vị trí tuyển dụng</label>
+                                <textarea class="form-control" rows="5" id="ViTriTD" name="ViTriTD"
+                                 placeholder="Vị trí tuyển dụng" required>{{td.ViTriTD}}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="LuongTD">Mức lương tuyển dụng</label>
+                                <input type="text" class="form-control" id="LuongTD" name="LuongTD"
+                                value="{{td.LuongTD if td.LuongTD is not none else ''}}" placeholder="Mức lương">
+                            </div>
+                            <div class="form-group">
+                                <label for="YeuCauCongViec">Yêu cầu công việc</label>
+                                <textarea class="form-control" rows="5" id="YeuCauCongViec" name="YeuCauCongViec"
+                                placeholder="Yêu cầu công việc">{{td.YeuCauCongViec if td.YeuCauCongViec is not none else ''}}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="MoTaCongViec">Mô tả công việc</label>
+                                <textarea class="form-control" rows="5" id="MoTaCongViec" name="MoTaCongViec"
+                                 placeholder="Mô tả công việc">{{td.MotaCongViec if td.MotaCongViec is not none else ''}}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="QuyenLoi">Quyền lợi</label>
+                                <textarea class="form-control" rows="5" id="QuyenLoi" name="QuyenLoi"
+                                placeholder="Quyền lợi">{{td.QuyenLoi if td.QuyenLoi is not none else ''}}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="DiaDiem">Địa điểm</label>
+                                <textarea class="form-control" rows="5" id="DiaDiem" name="DiaDiem"
+                                 placeholder="Địa điểm" required>{{td.DiaDiem}}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="SDT">Số điện thoại</label>
+                                <input type="phone" class="form-control" name="SDT" id="SDT" placeholder="Số điện thoại"
+                                value="{{td.SDT if td.SDT is not none else ''}}" >
+                            </div>
+                            <div class="form-group">
+                                <label for="Gmail">Gmail</label>
+                                <input type="email" class="form-control" name="Gmail" id="Gmail" placeholder="Gmail"
+                                value="{{ td.Gmail if td.Gmail is not none else '' }}" >
+                            </div>
+                            <div class="form-group">
+                                <label for="IDPost">IDpost</label>
+                                <input type="text" class="form-control" name="IDPost" id="IDPost" placeholder="IDPost"
+                                value="{{td.IDPost}}" required readonly>
+                            </div>
+                            <div class="post-thumb" style="width: 50%">
+                                <img class="img-fluid" id="{{td.IDPost}}" alt="" src="{{ url_for('static', path='/images/TDImages/' ~ td.IDPost ~ '.jpg') }}" style="width:100%; height:100%" 
+                                onerror='this.src = "{{ url_for('static', path='/images/TDImages/default.png') }}"'/>
+                             </div>
+                            <div class="form-group">
+                                <label for="AnhPost">Đổi ảnh(Tên ảnh phải trùng với IDPost)</label>
+                                <input type="file" id="AnhPost" name="image">
+                            </div>
+                            <div class="form-group d-flex justify-content-around align-items-center">
+                                <button type="submit" class="btn btn-primary">Cật nhật</button>
+                                <button type="button" class="btn btn-primary" id="Reset">Reset</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        document.getElementById("Reset").addEventListener('click', function(){
+            const NoiTD = document.getElementById('NoiTD').value = `{{td.NoiTD}}`;
+            const NgayTD = document.getElementById('NgayTD').value = `{{td.NgayTD}}`;
+            const SoLuongTD = document.getElementById('SoLuongTD').value = `{{td.SoLuongTD}}`;
+            const LinhVucTD = document.getElementById('LinhVucTD').value = `{{td.LinhVucTD}}`;
+            const ViTriTD = document.getElementById('ViTriTD').value = `{{td.ViTriTD}}`;
+            const LuongTD = document.getElementById('LuongTD').value = `{{td.LuongTD}}`;
+            const YeuCauCongViec = document.getElementById('YeuCauCongViec').value = `{{td.YeuCauCongViec}}`;
+            const MoTaCongViec = document.getElementById('MoTaCongViec').value = `{{td.MotaCongViec}}`;
+            const QuyenLoi = document.getElementById('QuyenLoi').value = `{{td.QuyenLoi}}`;
+            const DiaDiem = document.getElementById('DiaDiem').value = `{td.DiaDiem}`;
+            const SDT = document.getElementById('SDT').value = `{{td.SDT}}`;
+            const Gmail = document.getElementById('Gmail').value = `{{td.Gmail}}`;
+            const IDPost = document.getElementById('IDPost').value = `{{td.IDPost}}`;
+            const imageDiv = document.getElementById("{{td.IDPost}}")
+            imageDiv.src = `{{ url_for('static', path='/images/TDImages/' ~ td.IDPost ~ '.jpg') }}`
+        })
+        const UpdateTDForm = document.getElementById('UpdateTD');
+        var CurrentUrl = window.location.href
+        var part = CurrentUrl.split('/')
+        var url = part.slice(0, 4).join('/')
+        var isImage = true
+        document.getElementById('AnhPost').addEventListener('change', function(e) {
+            // Lấy file đầu tiên từ danh sách các file người dùng đã chọn
+            var file = e.target.files[0];
+            const imageDiv = document.getElementById("{{td.IDPost}}")
+            let IDPost = '{{td.IDPost}}'
+            if(!file.type.startsWith('image/')){
+                isImage = false
+                imageDiv.src = "{{ url_for('static', path='/images/TDImages/default.png') }}"
+            }
+            else{
+                isImage = true
+                imageDiv.src = URL.createObjectURL(file);
+            }
+          });
+        UpdateTDForm.onsubmit = function(e) {
+            e.preventDefault();
+            if(!isImage){
+                alert("Vui lòng chọn file ảnh")
+                return
+            }
+            const formData = new FormData(UpdateTDForm);
+            formData.append('IDTD', '{{td.IDTD}}')
+            fetch('/TDs/UpdateTD/', {
+                method: 'PUT',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data == true) {
+                    alert('Cật nhật tuyển dụng thành công');
+                    window.location.href = url + '/admin-Edit-TD';
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(err => alert("Lỗi hệ thống: " + err))
+        }
+        
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+
+</html>
